@@ -641,6 +641,28 @@
         /* =========================
            MOBILE
         ========================= */
+
+/* ===== GREEN NEON UPGRADE ===== */
+@property --angle{syntax:"<angle>";initial-value:0deg;inherits:false}
+body{position:relative;background-image:linear-gradient(rgba(53,232,123,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(53,232,123,.025) 1px,transparent 1px);background-size:45px 45px;animation:gridMove 18s linear infinite}
+@keyframes gridMove{to{background-position:45px 45px,45px 45px}}
+.cursor-glow{position:fixed;width:280px;height:280px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(53,232,123,.13),transparent 65%);transform:translate(-50%,-50%);z-index:0;mix-blend-mode:screen}
+.scanlines{position:fixed;inset:0;pointer-events:none;z-index:9998;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(53,232,123,.018) 4px)}
+.hero-card,.about-image,.service,.project,.testimonial,.contact-box,.stat{position:relative;isolation:isolate}
+.hero-card::before,.about-image::before,.service::before,.project::before,.testimonial::before,.contact-box::before,.stat::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:conic-gradient(from var(--angle),transparent 0 25%,rgba(53,232,123,.15),#35e87b,transparent 45% 70%,rgba(53,232,123,.7),transparent 85%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:neonSpin 5s linear infinite;pointer-events:none;z-index:-1}
+.hero-card::after,.about-image::after,.service::after,.project::after,.testimonial::after,.contact-box::after,.stat::after{content:"";position:absolute;inset:-8px;border-radius:inherit;background:rgba(53,232,123,.08);filter:blur(18px);opacity:0;transition:.4s;z-index:-2}
+.hero-card:hover::after,.about-image:hover::after,.service:hover::after,.project:hover::after,.testimonial:hover::after,.contact-box:hover::after,.stat:hover::after{opacity:1}
+@keyframes neonSpin{to{--angle:360deg}}
+.circle{animation:pulseRing 3s ease-in-out infinite}.circle-inner{animation:corePulse 2.5s ease-in-out infinite}
+@keyframes pulseRing{50%{transform:scale(1.04) rotate(3deg)}}
+@keyframes corePulse{50%{box-shadow:0 0 100px rgba(53,232,123,.42)}}
+.hero h1 span,.logo span{ text-shadow:0 0 8px rgba(53,232,123,.45),0 0 25px rgba(53,232,123,.18)}
+.btn-primary{position:relative;overflow:hidden}.btn-primary::before{content:"";position:absolute;top:-80%;left:-40%;width:30%;height:260%;background:rgba(255,255,255,.35);transform:rotate(25deg);transition:.7s}.btn-primary:hover::before{left:120%}
+.service,.project,.stat,.testimonial{transition:transform .45s ease,border-color .45s ease,box-shadow .45s ease}.service:hover,.project:hover,.stat:hover{box-shadow:0 0 25px rgba(53,232,123,.12),0 25px 60px rgba(0,0,0,.28)}
+.particle{position:fixed;width:3px;height:3px;border-radius:50%;background:#35e87b;box-shadow:0 0 10px #35e87b;pointer-events:none;opacity:.55;z-index:-1;animation:particleFloat linear infinite}@keyframes particleFloat{from{transform:translateY(105vh) scale(.5)}to{transform:translateY(-10vh) scale(1.2)}}
+.reveal{filter:blur(3px)}.reveal.active{filter:blur(0)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
         @media(max-width: 800px) {
 
             .menu-btn {
@@ -749,6 +771,7 @@
 </head>
 
 <body>
+<div class="cursor-glow"></div><div class="scanlines"></div>
 
     <!-- =========================
          NAVBAR
@@ -1274,6 +1297,13 @@
             }
 
         });
+
+
+const glow=document.querySelector('.cursor-glow');
+window.addEventListener('mousemove',e=>{if(glow){glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px'}});
+for(let i=0;i<(innerWidth<600?18:32);i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'vw';p.style.animationDuration=8+Math.random()*14+'s';p.style.animationDelay=-Math.random()*18+'s';p.style.opacity=(.2+Math.random()*.6).toFixed(2);document.body.appendChild(p)}
+if(matchMedia('(pointer:fine)').matches){document.querySelectorAll('.service,.project,.stat,.hero-card').forEach(card=>{card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;card.style.transform=`perspective(900px) rotateX(${((y/r.height)-.5)*-5}deg) rotateY(${((x/r.width)-.5)*5}deg) translateY(-5px)`});card.addEventListener('mouseleave',()=>card.style.transform='')})}
+document.querySelectorAll('.stat h3').forEach(el=>{const original=el.textContent.trim(),m=original.match(/(\d+)/);if(!m)return;const target=+m[1],suffix=original.replace(m[1],''),obs=new IntersectionObserver(es=>{if(es[0].isIntersecting){let start=performance.now();function tick(t){let p=Math.min((t-start)/1200,1);el.textContent=Math.floor(p*target)+suffix;if(p<1)requestAnimationFrame(tick)}requestAnimationFrame(tick);obs.disconnect()}},{threshold:.7});obs.observe(el)});
 
     </script>
 
